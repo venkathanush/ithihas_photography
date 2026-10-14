@@ -139,6 +139,7 @@ STORAGES = {
     },
 }
 
+STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"
 
 # Static files configuration for Whitenoise / Render
 STATIC_URL = 'static/'
