@@ -1,0 +1,431 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+{% block title %}ITHIHAS — Celebrating Love, Honoring Legacy{% endblock %}
+{% block content %}
+
+    <!-- ========================================== -->
+    <!-- HERO SECTION WITH DARK SLIDER -->
+    <!-- ========================================== -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">>
+        
+        <!-- Background Slider Images (Dynamic or Fallbacks) -->
+        <div class="absolute inset-0 z-0">
+            {% if featured_items %}
+                {% for item in featured_items %}
+                    {% if item.cover_image %}
+                    <div id="hero-bg-{{ forloop.counter0 }}" class="hero-slide absolute inset-0 bg-cover bg-center {% if forloop.first %}opacity-100 scale-100{% else %}opacity-0 scale-105{% endif %} transition-all duration-1000 ease-in-out" style="background-image: url('{{ item.cover_image.url }}');"></div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div id="hero-bg-0" class="hero-slide absolute inset-0 bg-cover bg-center opacity-100 scale-100 transition-all duration-1000 ease-in-out" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2000&auto=format&fit=crop');"></div>
+                <div id="hero-bg-1" class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 scale-105 transition-all duration-1000 ease-in-out" style="background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2000&auto=format&fit=crop');"></div>
+                <div id="hero-bg-2" class="hero-slide absolute inset-0 bg-cover bg-center opacity-0 scale-105 transition-all duration-1000 ease-in-out" style="background-image: url('https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=2000&auto=format&fit=crop');"></div>
+            {% endif %}
+            
+            <!-- Dark Gradient Overlays for Readability -->
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/75 to-brand-dark/40"></div>
+            <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-16">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel-cyan text-brand-cyan text-xs font-semibold uppercase tracking-widest mb-6 border border-brand-cyan/30">
+                <span class="w-2 h-2 rounded-full bg-brand-cyan animate-ping"></span>
+                Masterpiece Visual Storytellers
+            </div>
+
+            <h1 class="brand-logo-font text-4xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6">
+                Celebrating Love,<br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-sky to-brand-cyan text-glow">
+                    Honouring Legacies.
+                </span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-300 font-light mb-10 leading-relaxed">
+                At <span class="text-white font-semibold">ITHIHAS</span>, we craft high-art visual chronicles that honor sacred vows, authentic heritage, and raw human emotional connections.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#portfolio" class="w-full sm:w-auto px-8 py-4 bg-brand-cyan text-black font-bold text-xs uppercase tracking-widest rounded-full hover:bg-brand-sky transition-all duration-300 shadow-[0_0_25px_rgba(0,191,255,0.4)] flex items-center justify-center gap-2">
+                    <span>Explore Portfolio</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+                <a href="{% url 'contact' %}" class="w-full sm:w-auto px-8 py-4 glass-panel text-white border border-white/20 hover:border-brand-cyan font-bold text-xs uppercase tracking-widest rounded-full transition-all duration-300 flex items-center justify-center gap-2">
+                    <span>Reserve Your Date</span>
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-20 pt-8 border-t border-white/10 text-center">
+                <div>
+                    <div class="text-3xl font-extrabold text-brand-cyan brand-logo-font">500+</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1 font-medium">Weddings & Epics</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brand-cyan brand-logo-font">12+</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1 font-medium">Years Experience</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brand-cyan brand-logo-font">20+</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1 font-medium">Global Destinations</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brand-cyan brand-logo-font">100%</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1 font-medium">Legacy Satisfaction</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Dots -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-3">
+            <button onclick="setHeroSlide(0)" class="hero-dot w-3 h-3 rounded-full bg-brand-cyan transition-all" aria-label="Slide 1"></button>
+            <button onclick="setHeroSlide(1)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 2"></button>
+            <button onclick="setHeroSlide(2)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 3"></button>
+        </div>
+    </section>
+
+
+<!-- ========================================== -->
+<!-- PORTFOLIO / GALLERY SECTION -->
+<!-- ========================================== -->
+<section id="portfolio" class="py-24 md:py-32 bg-brand-dark relative border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">Our Visual Archives</span>
+            <h2 class="brand-logo-font text-3xl sm:text-5xl font-bold text-white mb-4">Curated Legacy Collections</h2>
+            <div class="w-16 h-1 bg-brand-cyan mx-auto rounded-full mb-6 shadow-[0_0_10px_rgba(0,191,255,0.8)]"></div>
+            <p class="text-gray-400 text-sm sm:text-base">Filter through our anthology of timeless photography capturing genuine emotion, elegance, and culture.</p>
+        </div>
+
+        <!-- Gallery Category Tabs -->
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-12">
+            <button type="button" onclick="filterCategory('all', this)" class="category-btn active px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-brand-cyan text-black shadow-[0_0_15px_rgba(0,191,255,0.3)]">
+                All Works
+            </button>
+            {% for cat in categories %}
+            <button type="button" onclick="filterCategory('{{ cat.slug }}', this)" class="category-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 glass-panel text-gray-300 hover:text-white border border-white/10 hover:border-brand-cyan">
+                {{ cat.name }}
+            </button>
+            {% endfor %}
+        </div>
+
+        <!-- Gallery Grid (With Bottom Margin) -->
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {% for item in items %}
+            <a href="{% url 'portfolio_detail' item.id %}" class="portfolio-card group relative h-96 rounded-2xl overflow-hidden cursor-pointer border border-brand-border bg-brand-card transition-all duration-500 hover:border-brand-cyan" data-category="{{ item.category.slug }}">
+                <div class="w-full h-full bg-gray-900">
+                    {% if item.cover_image %}
+                    <img src="{{ item.cover_image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    {% endif %}
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <span class="text-brand-cyan text-[10px] font-extrabold uppercase tracking-widest block mb-1">{{ item.category.name }}</span>
+                    <h3 class="brand-logo-font text-xl text-white font-semibold">{{ item.title }}</h3>
+                    <p class="text-xs text-gray-300 mt-1 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ item.description|truncatechars:60 }}</p>
+                </div>
+                <div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/70 border border-brand-cyan/50 flex items-center justify-center text-brand-cyan opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-expand text-xs"></i>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-3 text-center py-20 glass-panel rounded-2xl border border-brand-border">
+                <i class="fa-solid fa-folder-open text-4xl text-gray-600 mb-3"></i>
+                <p class="text-gray-400">No portfolio items added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- ABOUT US SECTION -->
+<!-- ========================================== -->
+<section id="about" class="py-24 md:py-32 bg-brand-card relative border-t border-brand-border/80 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left Visual Image (Dynamic from Admin) -->
+            <div class="relative">
+                <div class="relative z-10 rounded-3xl overflow-hidden border border-brand-cyan/30 shadow-2xl bg-black">
+                    {% if about and about.image %}
+                    <img src="{{ about.image.url }}" alt="Ithihas Photography" class="w-full h-auto max-h-[500px] object-cover">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?q=80&w=1000&auto=format&fit=crop" alt="Ithihas Photography Team" class="w-full h-auto">
+                    {% endif %}
+                </div>
+                <div class="absolute -inset-4 bg-brand-cyan/20 rounded-3xl blur-2xl -z-0"></div>
+            </div>
+
+            <!-- Right Brand Story -->
+            <div>
+                <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">{{ about.subheading|default:"Our Essence" }}</span>
+                <h2 class="brand-logo-font text-3xl sm:text-5xl font-bold text-white mb-6">About <span class="text-brand-cyan">ITHIHAS</span></h2>
+                
+                <p class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                    {{ about.paragraph_one|default:"Derived from Sanskrit, \"Ithihas\" translates to \"So indeed it was\" — defining grand histories, epic narratives, and unforgettable legacies." }}
+                </p>
+
+                <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                    {{ about.paragraph_two|default:"We view photography as a sacred responsibility: turned away from superficial poses and focused intensely on raw emotion, sacred rituals, and genuine human love." }}
+                </p>
+
+                <div class="grid grid-cols-2 gap-6 pt-6 border-t border-brand-border">
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-full bg-brand-cyan/10 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan shrink-0">
+                            <i class="fa-solid fa-camera text-xs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase">Fine-Art Aesthetic</h4>
+                            <p class="text-[11px] text-gray-400 mt-1">High-contrast, emotional cinematic compositions.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-full bg-brand-cyan/10 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan shrink-0">
+                            <i class="fa-solid fa-heart text-xs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase">Authentic Emotion</h4>
+                            <p class="text-[11px] text-gray-400 mt-1">Unscripted moments preserved with utmost respect.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================== -->
+<!-- SERVICES & PRICING TIERS -->
+<!-- ========================================== -->
+<section id="services" class="py-24 bg-brand-dark relative border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">Bespoke Offerings</span>
+            <h2 class="brand-logo-font text-3xl sm:text-5xl font-bold text-white mb-4">Services & Investment</h2>
+            <div class="w-16 h-1 bg-brand-cyan mx-auto rounded-full mb-6 shadow-[0_0_10px_rgba(0,191,255,0.8)]"></div>
+            <p class="text-gray-400 text-sm sm:text-base">Comprehensive photography and filmmaking experiences tailored to preserve your milestone celebrations.</p>
+        </div>
+
+        <!-- Dynamic Flexible Service Tiers Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {% for tier in service_tiers %}
+            {% if tier.is_featured %}
+            <!-- Featured Signature Tier -->
+            <div class="glass-panel-cyan p-8 rounded-3xl border-2 border-brand-cyan relative flex flex-col justify-between shadow-[0_0_30px_rgba(0,191,255,0.2)] transform md:-translate-y-3">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-cyan text-black text-[10px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+                    Signature Choice
+                </div>
+                <div>
+                    <!-- Header Icon Container -->
+                    <div class="w-14 h-14 rounded-2xl bg-brand-cyan/10 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan mb-6 shadow-[0_0_15px_rgba(0,191,255,0.3)]">
+                        <i class="{{ tier.icon_class|default:'fa-solid fa-gem' }} text-2xl"></i>
+                    </div>
+
+                    <h3 class="brand-logo-font text-2xl font-bold text-white mb-2">{{ tier.title }}</h3>
+                    <p class="text-gray-400 text-xs mb-6 leading-relaxed">{{ tier.description }}</p>
+                    
+                    <!-- Rupee Symbol Added Before Price -->
+                    <div class="text-3xl font-bold text-brand-cyan mb-6 brand-logo-font">₹{{ tier.price }} <span class="text-xs font-normal text-gray-400">/ starting</span></div>
+
+                    <ul class="space-y-3 text-xs text-gray-300 mb-8">
+                        {% for feature in tier.get_features_list %}
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-brand-cyan"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a href="{% url 'contact' %}" class="w-full text-center py-3 rounded-full bg-brand-cyan text-black font-bold text-xs uppercase tracking-wider hover:bg-brand-sky transition-colors shadow-[0_0_15px_rgba(0,191,255,0.4)]">Select Tier</a>
+            </div>
+            {% else %}
+            <!-- Standard Tier -->
+            <div class="glass-panel p-8 rounded-3xl border border-brand-border hover:border-brand-cyan/50 transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                    <!-- Header Icon Container -->
+                    <div class="w-14 h-14 rounded-2xl bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan mb-6 group-hover:bg-brand-cyan group-hover:text-black transition-all duration-300">
+                        <i class="{{ tier.icon_class|default:'fa-solid fa-camera-retro' }} text-2xl"></i>
+                    </div>
+
+                    <h3 class="brand-logo-font text-2xl font-bold text-white mb-2">{{ tier.title }}</h3>
+                    <p class="text-gray-400 text-xs mb-6 leading-relaxed">{{ tier.description }}</p>
+                    
+                    <!-- Rupee Symbol Added Before Price -->
+                    <div class="text-3xl font-bold text-white mb-6 brand-logo-font">₹{{ tier.price }} <span class="text-xs font-normal text-gray-400">/ starting</span></div>
+
+                    <ul class="space-y-3 text-xs text-gray-300 mb-8">
+                        {% for feature in tier.get_features_list %}
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-brand-cyan"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a href="{% url 'contact' %}" class="w-full text-center py-3 rounded-full border border-brand-cyan text-brand-cyan hover:bg-brand-cyan hover:text-black font-bold text-xs uppercase tracking-wider transition-colors">Select Tier</a>
+            </div>
+            {% endif %}
+            {% empty %}
+            <div class="col-span-3 text-center py-12 text-gray-400">
+                <p>No service tiers configured yet. Add them in your admin panel.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- LEGACY STORIES SECTION -->
+<!-- ========================================== -->
+<section id="stories" class="py-24 bg-brand-card relative border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">Recorded Memories</span>
+            <h2 class="brand-logo-font text-3xl sm:text-5xl font-bold text-white mb-4">Legacy Chronicles</h2>
+            <div class="w-16 h-1 bg-brand-cyan mx-auto rounded-full mb-6 shadow-[0_0_10px_rgba(0,191,255,0.8)]"></div>
+            <p class="text-gray-400 text-sm sm:text-base">Real stories of love, heritage, and timeless moments captured through our lens.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            
+            {% for story in legacy_stories %}
+            <!-- Dynamic Story Card -->
+            <div class="glass-panel rounded-3xl overflow-hidden border border-brand-border flex flex-col sm:flex-row group hover:border-brand-cyan/40 transition-colors">
+                <div class="sm:w-1/2 h-64 sm:h-auto relative overflow-hidden bg-black">
+                    {% if story.image %}
+                    <img src="{{ story.image.url }}" alt="{{ story.client_names }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    {% endif %}
+                </div>
+                <div class="sm:w-1/2 p-8 flex flex-col justify-between">
+                    <div>
+                        <span class="text-brand-cyan text-[10px] font-bold uppercase tracking-widest">{{ story.location }}</span>
+                        <h3 class="brand-logo-font text-2xl font-bold text-white mt-1 mb-3">{{ story.client_names }}</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed font-light italic mb-4">
+                            "{{ story.story_quote }}"
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex text-brand-cyan text-xs gap-1 mb-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <span class="text-[10px] text-gray-400 uppercase font-semibold">{{ story.chronicle_type }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-2 text-center py-12 text-gray-400">
+                <p>No legacy stories added yet. Go to your admin panel to add them.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- TESTIMONIALS SECTION -->
+<!-- ========================================== -->
+<section id="testimonials" class="py-24 bg-brand-dark relative border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">Client Praise</span>
+            <h2 class="brand-logo-font text-3xl sm:text-5xl font-bold text-white mb-4">Words From Our Patrons</h2>
+            <div class="w-16 h-1 bg-brand-cyan mx-auto rounded-full mb-6 shadow-[0_0_10px_rgba(0,191,255,0.8)]"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {% for review in testimonials %}
+            <div class="glass-panel p-8 rounded-3xl border border-brand-border relative">
+                <i class="fa-solid fa-quote-left text-brand-cyan/20 text-4xl absolute top-6 right-6"></i>
+                <div class="flex text-brand-cyan text-xs gap-1 mb-4">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-xs text-gray-300 leading-relaxed mb-6 font-light">
+                    "{{ review.quote }}"
+                </p>
+                <div>
+                    <h4 class="brand-logo-font font-bold text-white text-sm">{{ review.client_name }}</h4>
+                    <span class="text-[10px] text-gray-500 uppercase">{{ review.location_tag }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12 text-gray-400">
+                <p>No testimonials added yet. Go to your admin panel to add them.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<script>
+    // ------------------------------------
+    // 1. HERO SLIDER AUTOMATION
+    // ------------------------------------
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+
+    function setHeroSlide(index) {
+        currentSlide = index;
+        slides.forEach((slide, idx) => {
+            if (idx === index) {
+                slide.classList.remove('opacity-0', 'scale-105');
+                slide.classList.add('opacity-100', 'scale-100');
+            } else {
+                slide.classList.remove('opacity-100', 'scale-100');
+                slide.classList.add('opacity-0', 'scale-105');
+            }
+        });
+
+        dots.forEach((dot, idx) => {
+            if (idx === index) {
+                dot.className = 'hero-dot w-3 h-3 rounded-full bg-brand-cyan transition-all';
+            } else {
+                dot.className = 'hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all';
+            }
+        });
+    }
+
+    if (slides.length > 1) {
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            setHeroSlide(currentSlide);
+        }, 5000);
+    }
+
+    // ------------------------------------
+    // 2. INSTANT CATEGORY FILTERING (No Page Jump)
+    // ------------------------------------
+    function filterCategory(slug, btn) {
+        // Reset all category buttons to default dark style
+        document.querySelectorAll('.category-btn').forEach(b => {
+            b.className = "category-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 glass-panel text-gray-300 hover:text-white border border-white/10 hover:border-brand-cyan";
+        });
+
+        // Highlight selected category button
+        btn.className = "category-btn active px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-brand-cyan text-black shadow-[0_0_15px_rgba(0,191,255,0.3)]";
+
+        // Filter cards smoothly without scrolling the page
+        const cards = document.querySelectorAll('.portfolio-card');
+        cards.forEach(card => {
+            if (slug === 'all' || card.dataset.category === slug) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+    </script>
+
+{% endblock %}

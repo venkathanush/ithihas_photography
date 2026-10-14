@@ -1,0 +1,46 @@
+{% extends 'portfolio/base.html' %}
+{% block title %}ITHIHAS | Gallery Archives{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-28">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-brand-cyan text-xs font-semibold uppercase tracking-widest block mb-2">Our Visual Archives</span>
+        <h1 class="brand-logo-font text-4xl font-extrabold text-white mb-3">Curated Legacy Collections</h1>
+        <div class="w-16 h-1 bg-brand-cyan mx-auto rounded-full mb-6 shadow-[0_0_10px_rgba(0,191,255,0.8)]"></div>
+        <p class="text-gray-400 text-sm">Explore collections categorized by weddings, portraits, cultural heritage, and grand events.</p>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+        <a href="{% url 'gallery' %}" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 {% if not request.GET.category %}bg-brand-cyan text-black shadow-[0_0_15px_rgba(0,191,255,0.3)]{% else %}glass-panel text-gray-300 hover:text-white border border-white/10{% endif %}">All Works</a>
+        {% for cat in categories %}
+        <a href="?category={{ cat.slug }}" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 {% if request.GET.category == cat.slug %}bg-brand-cyan text-black shadow-[0_0_15px_rgba(0,191,255,0.3)]{% else %}glass-panel text-gray-300 hover:text-white border border-white/10{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
+    </div>
+
+    <!-- Items Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in items %}
+        <a href="{% url 'portfolio_detail' item.id %}" class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer border border-brand-border bg-brand-card transition-all duration-500 hover:border-brand-cyan">
+            <div class="w-full h-full bg-gray-900">
+                {% if item.cover_image %}
+                <img src="{{ item.cover_image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                {% endif %}
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <span class="text-brand-cyan text-[10px] font-extrabold uppercase tracking-widest block mb-1">{{ item.category.name }}</span>
+                <h3 class="brand-logo-font text-xl text-white font-semibold">{{ item.title }}</h3>
+            </div>
+            <div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/70 border border-brand-cyan/50 flex items-center justify-center text-brand-cyan opacity-0 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-expand text-xs"></i>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-3 text-center py-20 glass-panel rounded-2xl border border-brand-border">
+            <i class="fa-solid fa-folder-open text-4xl text-gray-600 mb-3"></i>
+            <p class="text-gray-400">No photography items found in this category.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
