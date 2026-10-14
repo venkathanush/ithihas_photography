@@ -139,7 +139,6 @@ STORAGES = {
     },
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Static files configuration for Whitenoise / Render
 STATIC_URL = 'static/'
