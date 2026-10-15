@@ -108,8 +108,8 @@ UNFOLD = {
     "SITE_HEADER": "ITHIHAS",
     "SITE_URL": "/",
     "SITE_ICON": {
-        "light": lambda request: static("images/logo.png"),
-        "dark": lambda request: static("images/logo.png"),
+        "light": lambda request: static("https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png"),
+        "dark": lambda request: static("https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png"),
     },
     "SIDEBAR": {
         "show_search": True,
