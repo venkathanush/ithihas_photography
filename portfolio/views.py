@@ -56,16 +56,19 @@ def portfolio_detail(request, pk):
 def contact(request):
     success = False
     if request.method == 'POST':
-        name = request.POST.get('name', '')
-        email = request.POST.get('email', '')
-        phone = request.POST.get('phone', '')
-        event_type = request.POST.get('event_type', '')
-        event_date = request.POST.get('event_date') or None  # Handles empty date strings safely
-        message = request.POST.get('message', '')
-
-        # 1. Save the inquiry to your database model safely (including event details if your model has them)
         try:
-            # If your BookingInquiry model has event_type / event_date fields, include them:
+            name = request.POST.get('name', '')
+            email = request.POST.get('email', '')
+            phone = request.POST.get('phone', '')
+            event_type = request.POST.get('event_type', '')
+            
+            # Safely handle empty date input from HTML form
+            date_str = request.POST.get('event_date', '').strip()
+            event_date = date_str if date_str else None
+            
+            message = request.POST.get('message', '')
+
+            # 1. Save directly to the database model
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -74,32 +77,19 @@ def contact(request):
                 event_date=event_date,
                 message=message
             )
-        except Exception as db_error:
-            print(f"Database save error: {db_error}")
-            # If your model doesn't have event_type/event_date columns yet, fallback to basic creation:
-            try:
-                BookingInquiry.objects.create(
-                    name=name,
-                    email=email,
-                    phone=phone,
-                    message=message
-                )
-            except Exception as e2:
-                print(f"Fallback DB error: {e2}")
 
-        # 2. Email notification details
-        subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
-        email_content = (
-            f"You received a new inquiry from your website contact form:\n\n"
-            f"Name: {name}\n"
-            f"Email: {email}\n"
-            f"Phone: {phone}\n"
-            f"Event Type: {event_type}\n"
-            f"Event Date: {event_date}\n\n"
-            f"Message:\n{message}"
-        )
+            # 2. Send email notification via Brevo SMTP (fail_silently prevents mail crashes)
+            subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
+            email_content = (
+                f"You received a new booking inquiry from your website:\n\n"
+                f"Name: {name}\n"
+                f"Email: {email}\n"
+                f"Phone: {phone}\n"
+                f"Event Type: {event_type}\n"
+                f"Event Date: {event_date if event_date else 'Not specified'}\n\n"
+                f"Message:\n{message}"
+            )
 
-        try:
             send_mail(
                 subject,
                 email_content,
@@ -107,9 +97,11 @@ def contact(request):
                 ['ithihasbyvd@gmail.com'],
                 fail_silently=True,
             )
-        except Exception as e:
-            print(f"Email error: {e}")
 
-        success = True
+            success = True
+
+        except Exception as e:
+            print(f"Contact form submission error: {e}")
+            success = False
 
     return render(request, 'portfolio/contact.html', {'success': success})
