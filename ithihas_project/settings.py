@@ -110,13 +110,13 @@ UNFOLD = {
     "SITE_URL": "/",
     # Logo displayed on the login page above the welcome title
     "SITE_LOGO": {
-        "light": "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
-        "dark": "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
+        "light": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
+        "dark": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
     },
     # Small icon displayed in navigation top bar
     "SITE_ICON": {
-        "light": "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
-        "dark": "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
+        "light": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
+        "dark": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
     },
     "SIDEBAR": {
         "show_search": True,
