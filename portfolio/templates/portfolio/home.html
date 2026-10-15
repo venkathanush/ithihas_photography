@@ -4,14 +4,14 @@
 {% block content %}
 
     <!-- ========================================== -->
-    <!-- HERO SECTION WITH DARK SLIDER -->
+    <!-- HERO SECTION WITH DYNAMIC PORTFOLIO SLIDER -->
     <!-- ========================================== -->
-    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">>
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         
-        <!-- Background Slider Images (Dynamic or Fallbacks) -->
+        <!-- Background Slider Images (Dynamically mapped from portfolio cover images) -->
         <div class="absolute inset-0 z-0">
-            {% if featured_items %}
-                {% for item in featured_items %}
+            {% if items %}
+                {% for item in items %}
                     {% if item.cover_image %}
                     <div id="hero-bg-{{ forloop.counter0 }}" class="hero-slide absolute inset-0 bg-cover bg-center {% if forloop.first %}opacity-100 scale-100{% else %}opacity-0 scale-105{% endif %} transition-all duration-1000 ease-in-out" style="background-image: url('{{ item.cover_image.url }}');"></div>
                     {% endif %}
@@ -77,13 +77,25 @@
             </div>
         </div>
 
-        <!-- Slider Dots -->
+<!-- Dynamic Slider Dots -->
         <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-3">
-            <button onclick="setHeroSlide(0)" class="hero-dot w-3 h-3 rounded-full bg-brand-cyan transition-all" aria-label="Slide 1"></button>
-            <button onclick="setHeroSlide(1)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 2"></button>
-            <button onclick="setHeroSlide(2)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 3"></button>
+            {% if items %}
+                {% with is_first=True %}
+                    {% for item in items %}
+                        {% if item.cover_image %}
+                        <button type="button" data-slide-index="{{ forloop.counter0 }}" class="hero-dot w-3 h-3 rounded-full {% if forloop.first %}bg-brand-cyan{% else %}bg-white/40 hover:bg-white{% endif %} transition-all" aria-label="Slide {{ forloop.counter }}"></button> 
+                        {% comment %} Flip is_first to false after the first valid button is rendered {% endcomment %}
+                        {% with is_first=False %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+            {% else %}
+                <button onclick="setHeroSlide(0)" class="hero-dot w-3 h-3 rounded-full bg-brand-cyan transition-all" aria-label="Slide 1"></button>
+                <button onclick="setHeroSlide(1)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 2"></button>
+                <button onclick="setHeroSlide(2)" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" aria-label="Slide 3"></button>
+            {% endif %}
         </div>
-    </section>
+        </section>
 
 
 <!-- ========================================== -->
@@ -376,6 +388,7 @@
     const dots = document.querySelectorAll('.hero-dot');
 
     function setHeroSlide(index) {
+        if (slides.length === 0) return;
         currentSlide = index;
         slides.forEach((slide, idx) => {
             if (idx === index) {
@@ -426,6 +439,5 @@
         });
     }
 </script>
-    </script>
 
 {% endblock %}
