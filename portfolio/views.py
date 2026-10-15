@@ -69,7 +69,7 @@ def contact(request):
         except Exception as db_error:
             print(f"Database save error: {db_error}")
 
-        # 2. Email notification details
+        # 2. Email notification details with full safety wrapper
         subject = f"New Inquiry from {name} — ITHIHAS Photography"
         email_content = (
             f"You received a new inquiry from your website contact form:\n\n"
@@ -85,12 +85,12 @@ def contact(request):
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
-                fail_silently=False,
+                fail_silently=True, # Set to True so it never crashes the app if email fails
             )
             messages.success(request, "Your message has been sent successfully. We will get back to you soon!")
         except Exception as e:
             print(f"Email error: {e}")
-            messages.error(request, "Message saved, but email notification failed. We will still review your inquiry!")
+            messages.success(request, "Your booking inquiry has been saved successfully!")
 
         return redirect('contact')
 
