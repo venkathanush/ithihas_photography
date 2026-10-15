@@ -121,75 +121,6 @@ UNFOLD = {
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": False,
-        "navigation": [
-            {
-                "title": "Portfolio Management",
-                "separator": True,
-                "items": [
-                    {
-                        "title": "Home / Dashboard",
-                        "icon": "home",
-                        "link": "admin:index",
-                    },
-                    {
-                        "title": "Service Tiers",
-                        "icon": "sell",
-                        "link": "admin:portfolio_servicetier_changelist",
-                    },
-                    {
-                        "title": "Categories",
-                        "icon": "category",
-                        "link": "admin:portfolio_category_changelist",
-                    },
-                    {
-                        "title": "Portfolio Items",
-                        "icon": "photo_library",
-                        "link": "admin:portfolio_portfolioitem_changelist",
-                    },
-                    {
-                        "title": "Photos",
-                        "icon": "photo_camera",
-                        "link": "admin:portfolio_photo_changelist",
-                    },
-                    {
-                        "title": "Booking Inquiries",
-                        "icon": "mail",
-                        "link": "admin:portfolio_bookinginquiry_changelist",
-                    },
-                    {
-                        "title": "About Section",
-                        "icon": "info",
-                        "link": "admin:portfolio_aboutsection_changelist",
-                    },
-                    {
-                        "title": "Legacy Stories",
-                        "icon": "history_edu",
-                        "link": "admin:portfolio_legacystory_changelist",
-                    },
-                    {
-                        "title": "Testimonials",
-                        "icon": "star",
-                        "link": "admin:portfolio_testimonial_changelist",
-                    },
-                ],
-            },
-            {
-                "title": "Authentication and Authorization",
-                "separator": True,
-                "items": [
-                    {
-                        "title": "Users",
-                        "icon": "person",
-                        "link": "admin:auth_user_changelist",
-                    },
-                    {
-                        "title": "Groups",
-                        "icon": "group",
-                        "link": "admin:auth_group_changelist",
-                    },
-                ],
-            },
-        ],
     },
     "COLORS": {
         "font": {
@@ -245,3 +176,4 @@ EMAIL_HOST_USER = os.getenv('BREVO_SMTP_USER')
 EMAIL_HOST_PASSWORD = os.getenv('BREVO_SMTP_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'ithihasbyvd@gmail.com')
+
