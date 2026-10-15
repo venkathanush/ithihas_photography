@@ -116,6 +116,18 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
 }
 
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark bg-dark",
+    "sidebar": "sidebar-dark-info",
+    "brand_colour": "navbar_dark",
+    "accent": "accent-info",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "sidebar_fixed": True,
+}
+
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
