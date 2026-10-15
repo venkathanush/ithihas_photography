@@ -1,0 +1,56 @@
+{% extends "unfold/layouts/base_simple.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center mb-6">
+    <!-- Your Cloudinary Logo -->
+    <img src="https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png" alt="ITHIHAS Logo" class="h-16 w-auto mb-3 object-contain">
+    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Welcome back to</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400">ITHIHAS Photography Admin</p>
+</div>
+
+<div class="max-w-sm w-full mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+    {% if form.errors and not form.non_field_errors %}
+        <p class="mb-4 text-center text-sm font-medium text-red-600 dark:text-red-400">
+            {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+        </p>
+    {% endif %}
+
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+            <p class="mb-4 text-center text-sm font-medium text-red-600 dark:text-red-400">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-2" for="{{ form.username.id_for_label }}">
+                Username*
+            </label>
+            {{ form.username }}
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-2" for="{{ form.password.id_for_label }}">
+                Password*
+            </label>
+            {{ form.password }}
+        </div>
+
+        {% url 'admin_password_reset' as password_reset_url %}
+        {% if password_reset_url %}
+            <div class="mb-4 text-right">
+                <a href="{{ password_reset_url }}" class="text-xs text-primary-600 hover:underline">Forgotten your password?</a>
+            </div>
+        {% endif %}
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button type="submit" class="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition duration-150 text-center">
+            Log in &rarr;
+        </button>
+    </form>
+</div>
+{% endblock %}
