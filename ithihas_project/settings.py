@@ -64,10 +64,10 @@ WSGI_APPLICATION = 'ithihas_project.wsgi.application'
 # Database
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
 
@@ -92,8 +92,8 @@ USE_TZ = True
 # Static and Media Files Configuration
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -129,12 +129,6 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_fixed": True,
 }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
-        conn_max_age=600
-    )
-}
 
 # Cloudinary Media Storage Configuration
 CLOUDINARY_STORAGE = {
@@ -143,6 +137,9 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': 'zAmV49HViWxrFSZtUc64wnnNoRY',
     'SECURE': True,  # Force HTTPS URLs
 }
+
+# Storage Backends & Legacy Compatibility Fallback
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 STORAGES = {
     "default": {
@@ -153,11 +150,6 @@ STORAGES = {
     },
 }
 
-
-# Static files configuration for Whitenoise / Render
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Brevo (Sendinblue) SMTP Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
