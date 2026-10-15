@@ -51,40 +51,47 @@ def portfolio_detail(request, pk):
     item = get_object_or_404(PortfolioItem, pk=pk)
     return render(request, 'portfolio/detail.html', {'item': item})
 
-def contact_view(request):
+def contact(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
         phone = request.POST.get('phone', '')
         message = request.POST.get('message', '')
 
-        # 1. Save to database first (if you have a Contact model)
-        # Contact.objects.create(name=name, email=email, phone=phone, message=message)
+        # 1. Save the inquiry to your database model safely
+        try:
+            BookingInquiry.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                message=message
+            )
+        except Exception as db_error:
+            print(f"Database save error: {db_error}")
 
-        # 2. Send email notification to you
-        subject = f"New Client Inquiry from {name} — ITHIHAS Photography"
-        email_message = (
-            f"You have a new booking/contact inquiry from your website:\n\n"
+        # 2. Email notification details
+        subject = f"New Inquiry from {name} — ITHIHAS Photography"
+        email_content = (
+            f"You received a new inquiry from your website contact form:\n\n"
             f"Name: {name}\n"
             f"Email: {email}\n"
             f"Phone: {phone}\n\n"
             f"Message:\n{message}"
         )
-        
+
         try:
             send_mail(
                 subject,
-                email_message,
+                email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
                 fail_silently=False,
             )
-            messages.success(request, "Your message has been sent successfully! We will get back to you soon.")
+            messages.success(request, "Your message has been sent successfully. We will get back to you soon!")
         except Exception as e:
-            # Logs the error to console/Render logs instead of crashing with 500
-            print(f"Email sending failed: {e}")
-            messages.error(request, "There was an error sending your message. Please try emailing us directly at ithihasbyvd@gmail.com.")
+            print(f"Email error: {e}")
+            messages.error(request, "Message saved, but email notification failed. We will still review your inquiry!")
 
-        return redirect('contact')  # Redirect back to contact page or home
+        return redirect('contact')
 
     return render(request, 'portfolio/contact.html')
