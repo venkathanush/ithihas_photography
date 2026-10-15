@@ -125,9 +125,10 @@ DATABASES = {
 
 # Cloudinary Media Storage Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': 'lflhno7m',
+    'API_KEY': '464393156323861',
+    'API_SECRET': 'zAmV49HViWxrFSZtUc64wnnNoRY',
+    'SECURE': True,  # Force HTTPS URLs
 }
 
 STORAGES = {
@@ -135,7 +136,7 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "cloudinary_storage.storage.StaticHashedCloudinaryStorage",
+        "BACKEND": "cloudinary_storage.storage.StaticCloudinaryStorage",
     },
 }
 
