@@ -103,25 +103,83 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Django Unfold Admin Theme Configuration
+# Django Unfold Admin Theme Configuration
 UNFOLD = {
     "SITE_TITLE": "ITHIHAS Photography Admin",
     "SITE_HEADER": "ITHIHAS",
     "SITE_URL": "/",
     "SITE_ICON": {
-        "light": "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
+        "light": "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
         "dark": "https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png",
-    },    "SIDEBAR": {
+    },
+    "SIDEBAR": {
         "show_search": True,
-        "show_all_applications": True,
+        "show_all_applications": False,  # Removes the separate 'All applications' button at the bottom
         "navigation": [
             {
                 "title": "Portfolio Management",
                 "separator": True,
                 "items": [
                     {
-                        "title": "Home",
+                        "title": "Home / Dashboard",
                         "icon": "home",
                         "link": "admin:index",
+                    },
+                    {
+                        "title": "Service Tiers",
+                        "icon": "sell",
+                        "link": "admin:portfolio_servicetier_changelist",
+                    },
+                    {
+                        "title": "Categories",
+                        "icon": "category",
+                        "link": "admin:portfolio_category_changelist",
+                    },
+                    {
+                        "title": "Portfolio Items",
+                        "icon": "photo_library",
+                        "link": "admin:portfolio_portfolioitem_changelist",
+                    },
+                    {
+                        "title": "Photos",
+                        "icon": "photo_camera",
+                        "link": "admin:portfolio_photo_changelist",
+                    },
+                    {
+                        "title": "Booking Inquiries",
+                        "icon": "mail",
+                        "link": "admin:portfolio_bookinginquiry_changelist",
+                    },
+                    {
+                        "title": "About Section",
+                        "icon": "info",
+                        "link": "admin:portfolio_aboutsection_changelist",
+                    },
+                    {
+                        "title": "Legacy Stories",
+                        "icon": "history_edu",
+                        "link": "admin:portfolio_legacystory_changelist",
+                    },
+                    {
+                        "title": "Testimonials",
+                        "icon": "star",
+                        "link": "admin:portfolio_testimonial_changelist",
+                    },
+                ],
+            },
+            {
+                "title": "Authentication and Authorization",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Users",
+                        "icon": "person",
+                        "link": "admin:auth_user_changelist",
+                    },
+                    {
+                        "title": "Groups",
+                        "icon": "group",
+                        "link": "admin:auth_group_changelist",
                     },
                 ],
             },
