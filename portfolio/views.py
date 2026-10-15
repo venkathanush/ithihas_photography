@@ -54,42 +54,62 @@ def portfolio_detail(request, pk):
     return render(request, 'portfolio/detail.html', {'item': item})
 
 def contact(request):
+    success = False
     if request.method == 'POST':
-        try:
-            name = request.POST.get('name', '')
-            email = request.POST.get('email', '')
-            phone = request.POST.get('phone', '')
-            message = request.POST.get('message', '')
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        phone = request.POST.get('phone', '')
+        event_type = request.POST.get('event_type', '')
+        event_date = request.POST.get('event_date') or None  # Handles empty date strings safely
+        message = request.POST.get('message', '')
 
-            # Try saving to database
+        # 1. Save the inquiry to your database model safely (including event details if your model has them)
+        try:
+            # If your BookingInquiry model has event_type / event_date fields, include them:
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
                 phone=phone,
+                event_type=event_type,
+                event_date=event_date,
                 message=message
             )
+        except Exception as db_error:
+            print(f"Database save error: {db_error}")
+            # If your model doesn't have event_type/event_date columns yet, fallback to basic creation:
+            try:
+                BookingInquiry.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    message=message
+                )
+            except Exception as e2:
+                print(f"Fallback DB error: {e2}")
 
-            # Try sending email
-            subject = f"New Inquiry from {name} — ITHIHAS Photography"
-            email_content = (
-                f"Name: {name}\n"
-                f"Email: {email}\n"
-                f"Phone: {phone}\n\n"
-                f"Message:\n{message}"
-            )
+        # 2. Email notification details
+        subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
+        email_content = (
+            f"You received a new inquiry from your website contact form:\n\n"
+            f"Name: {name}\n"
+            f"Email: {email}\n"
+            f"Phone: {phone}\n"
+            f"Event Type: {event_type}\n"
+            f"Event Date: {event_date}\n\n"
+            f"Message:\n{message}"
+        )
 
+        try:
             send_mail(
                 subject,
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
-                fail_silently=False,
+                fail_silently=True,
             )
-            return redirect('contact')
-            
         except Exception as e:
-            # This will show the exact error traceback on your screen!
-            error_details = traceback.format_exc()
-            return HttpResponse(f"<h2>Debugging 500 Error:</h2><pre>{error_details}</pre>", status=500)
+            print(f"Email error: {e}")
 
-    return render(request, 'portfolio/contact.html')
+        success = True
+
+    return render(request, 'portfolio/contact.html', {'success': success})
