@@ -15,7 +15,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     # Jazzmin Admin Theme (must come before django.contrib.admin)
-    'jazzmin',
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -101,34 +101,62 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Jazzmin Admin UI Settings
-
-JAZZMIN_SETTINGS = {
-    "site_title": "ITHIHAS Photography Admin",
-    "site_header": "ITHIHAS",
-    "site_brand": "ITHIHAS Photography",
-    "welcome_sign": "Welcome to ITHIHAS Photography Admin Panel",
-    "copyright": "ITHIHAS - Celebrating Love, Honoring Legacy",
-    "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "View Main Site", "url": "/"},
-    ],
-    "show_sidebar": True,
-    "navigation_expanded": True,
+# Django Unfold Admin Theme Configuration
+UNFOLD = {
+    "SITE_TITLE": "ITHIHAS Photography Admin",
+    "SITE_HEADER": "ITHIHAS",
+    "SITE_URL": "/",
+    "SITE_ICON": {
+        "light": lambda request: static("images/logo.png"),
+        "dark": lambda request: static("images/logo.png"),
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Portfolio Management",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Home",
+                        "icon": "home",
+                        "link": "admin:index",
+                    },
+                    # Add your portfolio model links here if desired, e.g.:
+                    # {
+                    #     "title": "Gallery Items",
+                    #     "icon": "photo_camera",
+                    #     "link": "admin:portfolio_gallery_changelist",
+                    # },
+                ],
+            },
+        ],
+    },
+    "COLORS": {
+        "font": {
+            "subtle-light": "107 114 128",
+            "subtle-dark": "156 163 175",
+            "default-light": "17 24 39",
+            "default-dark": "243 244 246",
+            "muted-light": "156 163 175",
+            "muted-dark": "107 114 128",
+        },
+        "primary": {
+            "50": "249 250 251",
+            "100": "243 244 246",
+            "200": "229 231 235",
+            "300": "209 213 219",
+            "400": "156 163 175",
+            "500": "107 114 128",
+            "600": "75 85 99",
+            "700": "55 65 81",
+            "800": "31 41 55",
+            "900": "17 24 39",
+            "950": "3 7 18",
+        },
+    },
 }
-
-JAZZMIN_UI_TWEAKS = {
-    "theme": "darkly",
-    "dark_mode_theme": "darkly",
-    "navbar": "navbar-dark bg-dark",
-    "sidebar": "sidebar-dark-info",
-    "brand_colour": "navbar_dark",
-    "accent": "accent-info",
-    "no_navbar_border": True,
-    "navbar_fixed": True,
-    "sidebar_fixed": True,
-}
-
 
 # Cloudinary Media Storage Configuration
 CLOUDINARY_STORAGE = {
