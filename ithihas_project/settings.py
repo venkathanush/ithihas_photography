@@ -108,6 +108,7 @@ UNFOLD = {
     "SITE_TITLE": "ITHIHAS Photography Admin",
     "SITE_HEADER": "ITHIHAS",
     "SITE_URL": "/",
+    "SITE_FAVICON": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
     # Logo displayed on the login page above the welcome title
     "SITE_LOGO": {
         "light": lambda request: "https://res.cloudinary.com/lflhno7m/image/upload/v1792039015/Ithihas1.1_3x.png",
