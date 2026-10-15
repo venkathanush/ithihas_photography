@@ -3,6 +3,8 @@ from .models import Category, PortfolioItem, BookingInquiry, AboutSection, Servi
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
+import traceback
+from django.http import HttpResponse
 
 def home(request):
     categories = Category.objects.all()
@@ -53,45 +55,41 @@ def portfolio_detail(request, pk):
 
 def contact(request):
     if request.method == 'POST':
-        name = request.POST.get('name', '')
-        email = request.POST.get('email', '')
-        phone = request.POST.get('phone', '')
-        message = request.POST.get('message', '')
-
-        # 1. Save the inquiry to your database model safely
         try:
+            name = request.POST.get('name', '')
+            email = request.POST.get('email', '')
+            phone = request.POST.get('phone', '')
+            message = request.POST.get('message', '')
+
+            # Try saving to database
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
                 phone=phone,
                 message=message
             )
-        except Exception as db_error:
-            print(f"Database save error: {db_error}")
 
-        # 2. Email notification details with full safety wrapper
-        subject = f"New Inquiry from {name} — ITHIHAS Photography"
-        email_content = (
-            f"You received a new inquiry from your website contact form:\n\n"
-            f"Name: {name}\n"
-            f"Email: {email}\n"
-            f"Phone: {phone}\n\n"
-            f"Message:\n{message}"
-        )
+            # Try sending email
+            subject = f"New Inquiry from {name} — ITHIHAS Photography"
+            email_content = (
+                f"Name: {name}\n"
+                f"Email: {email}\n"
+                f"Phone: {phone}\n\n"
+                f"Message:\n{message}"
+            )
 
-        try:
             send_mail(
                 subject,
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
-                fail_silently=True, # Set to True so it never crashes the app if email fails
+                fail_silently=False,
             )
-            messages.success(request, "Your message has been sent successfully. We will get back to you soon!")
+            return redirect('contact')
+            
         except Exception as e:
-            print(f"Email error: {e}")
-            messages.success(request, "Your booking inquiry has been saved successfully!")
-
-        return redirect('contact')
+            # This will show the exact error traceback on your screen!
+            error_details = traceback.format_exc()
+            return HttpResponse(f"<h2>Debugging 500 Error:</h2><pre>{error_details}</pre>", status=500)
 
     return render(request, 'portfolio/contact.html')
