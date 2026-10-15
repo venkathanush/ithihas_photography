@@ -62,12 +62,13 @@ def contact(request):
             phone = request.POST.get('phone', '')
             event_type = request.POST.get('event_type', '')
             
+            # Safely handle empty date input from HTML form
             date_str = request.POST.get('event_date', '').strip()
             event_date = date_str if date_str else None
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to database model
+            # 1. Save directly to the database model
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -76,32 +77,32 @@ def contact(request):
                 event_date=event_date,
                 message=message
             )
+
+            # 2. Send email notification via Brevo SMTP
+            subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
+            email_content = (
+                f"You received a new booking inquiry from your website:\n\n"
+                f"Name: {name}\n"
+                f"Email: {email}\n"
+                f"Phone: {phone}\n"
+                f"Event Type: {event_type}\n"
+                f"Event Date: {event_date if event_date else 'Not specified'}\n\n"
+                f"Message:\n{message}"
+            )
+
+            send_mail(
+                subject,
+                email_content,
+                settings.DEFAULT_FROM_EMAIL,
+                ['ithihasbyvd@gmail.com'],
+                fail_silently=False,  # Set to False so we catch any email/SMTP errors
+            )
+
             success = True
-        except Exception as db_err:
-            print(f"Database error during contact submission: {db_err}")
 
-        # 2. Try sending email separately so it never crashes the response
-        if success:
-            try:
-                subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
-                email_content = (
-                    f"You received a new booking inquiry:\n\n"
-                    f"Name: {name}\n"
-                    f"Email: {email}\n"
-                    f"Phone: {phone}\n"
-                    f"Event Type: {event_type}\n"
-                    f"Event Date: {event_date if event_date else 'Not specified'}\n\n"
-                    f"Message:\n{message}"
-                )
-
-                send_mail(
-                    subject,
-                    email_content,
-                    settings.DEFAULT_FROM_EMAIL,
-                    ['ithihasbyvd@gmail.com'],
-                    fail_silently=True,
-                )
-            except Exception as mail_err:
-                print(f"Email sending error: {mail_err}")
+        except Exception as e:
+            # This will display the exact error traceback right on your screen!
+            error_details = traceback.format_exc()
+            return HttpResponse(f"<h2>Contact Form Error Debugger:</h2><pre>{error_details}</pre>", status=500)
 
     return render(request, 'portfolio/contact.html', {'success': success})
