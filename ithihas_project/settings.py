@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import dj_database_url
+from django.templatetags.static import static
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,7 +15,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # Jazzmin Admin Theme (must come before django.contrib.admin)
+    # Unfold Admin Theme (must come before django.contrib.admin)
     'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,12 +124,6 @@ UNFOLD = {
                         "icon": "home",
                         "link": "admin:index",
                     },
-                    # Add your portfolio model links here if desired, e.g.:
-                    # {
-                    #     "title": "Gallery Items",
-                    #     "icon": "photo_camera",
-                    #     "link": "admin:portfolio_gallery_changelist",
-                    # },
                 ],
             },
         ],
