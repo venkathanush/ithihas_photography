@@ -78,7 +78,7 @@ def contact(request):
                 message=message
             )
 
-            # 2. Send email notification via Brevo SMTP (fail_silently prevents mail crashes)
+            # 2. Send email notification via Brevo SMTP
             subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
             email_content = (
                 f"You received a new booking inquiry from your website:\n\n"
@@ -95,13 +95,14 @@ def contact(request):
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
-                fail_silently=True,
+                fail_silently=False,  # Set to False so we catch any email/SMTP errors
             )
 
             success = True
 
         except Exception as e:
-            print(f"Contact form submission error: {e}")
-            success = False
+            # This will display the exact error traceback right on your screen!
+            error_details = traceback.format_exc()
+            return HttpResponse(f"<h2>Contact Form Error Debugger:</h2><pre>{error_details}</pre>", status=500)
 
     return render(request, 'portfolio/contact.html', {'success': success})
