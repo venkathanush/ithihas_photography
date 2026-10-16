@@ -101,6 +101,9 @@ def portfolio_detail(request, pk):
     return render(request, 'portfolio/detail.html', {'item': item})
 
 def contact(request):
+    # Check if we were redirected here after a successful submission
+    success = request.GET.get('submitted') == 'true'
+
     if request.method == 'POST':
         try:
             name = request.POST.get('name', '')
@@ -113,7 +116,7 @@ def contact(request):
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model (Guaranteed save)
+            # 1. Save directly to the database model
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -123,7 +126,7 @@ def contact(request):
                 message=message
             )
 
-            # 2. Try sending email notification via Brevo SMTP (fail silently so it never blocks)
+            # 2. Try sending email notification via Brevo SMTP
             try:
                 subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
                 email_content = (
@@ -149,7 +152,7 @@ def contact(request):
         except Exception as db_err:
             print(f"Database error during contact submission: {db_err}")
 
-        # 3. Redirect cleanly using GET request to avoid any template 500 rendering crashes
-        return redirect('contact')
+        # Redirect with a query parameter so the GET request knows it was successful
+        return redirect('/contact/?submitted=true')
 
-    return render(request, 'portfolio/contact.html', {'success': False})
+    return render(request, 'portfolio/contact.html', {'success': success})
