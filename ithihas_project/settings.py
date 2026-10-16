@@ -178,3 +178,7 @@ EMAIL_HOST_USER = os.environ.get('BREVO_SMTP_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('BREVO_SMTP_PASSWORD', '')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'ithihasbyvd@gmail.com')
+
+# Render Proxy and CSRF Settings for Production
+CSRF_TRUSTED_ORIGINS = ['https://ithihasbyvd.in', 'https://*.onrender.com']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -5,6 +5,8 @@ from django.conf import settings
 from django.contrib import messages
 import traceback
 from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 def home(request):
     categories = Category.objects.all()
@@ -100,6 +102,7 @@ def portfolio_detail(request, pk):
     item = get_object_or_404(PortfolioItem, pk=pk)
     return render(request, 'portfolio/detail.html', {'item': item})
 
+@csrf_exempt
 def contact(request):
     if request.method == 'POST':
         try:
@@ -113,7 +116,7 @@ def contact(request):
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model (Guaranteed save)
+            # 1. Save directly to the database model
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -123,7 +126,7 @@ def contact(request):
                 message=message
             )
 
-            # 2. Try sending email notification via Brevo SMTP (fail silently)
+            # 2. Non-blocking email dispatch
             try:
                 subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
                 email_content = (
@@ -144,9 +147,8 @@ def contact(request):
                     fail_silently=True,
                 )
             except Exception as mail_err:
-                print(f"Email error (non-blocking): {mail_err}")
+                print(f"Email error: {mail_err}")
 
-            # Return a simple success response that never crashes
             return HttpResponse(
                 "<div style='background:#111116; color:#00BFFF; padding:40px; text-align:center; font-family:sans-serif; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>"
                 "<h1>Inquiry Received Successfully!</h1>"
@@ -156,8 +158,8 @@ def contact(request):
             )
 
         except Exception as e:
-            print(f"Contact form critical error: {e}")
-            return HttpResponse("An error occurred while saving your inquiry. Please try again.", status=500)
+            print(f"Error: {e}")
+            return HttpResponse("Error saving inquiry", status=500)
 
     success = request.GET.get('submitted') == 'true'
     return render(request, 'portfolio/contact.html', {'success': success})
