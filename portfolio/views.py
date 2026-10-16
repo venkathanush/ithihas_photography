@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from .models import MentorshipInquiry
 
 def home(request):
     categories = Category.objects.all()
@@ -114,3 +115,29 @@ def contact(request):
         return redirect('/contact/?submitted=true')
 
     return render(request, 'portfolio/contact.html', {'success': success})
+
+def mentorship(request):
+    success = request.GET.get('submitted') == 'true'
+
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name', '')
+            email = request.POST.get('email', '')
+            phone = request.POST.get('phone', '')
+            skill_level = request.POST.get('skill_level', '')
+            message = request.POST.get('message', '')
+
+            if name and email:
+                MentorshipInquiry.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    skill_level=skill_level,
+                    message=message
+                )
+        except Exception as e:
+            print(f"Error saving mentorship inquiry: {e}")
+
+        return redirect('/mentorship/?submitted=true')
+
+    return render(request, 'portfolio/mentorship.html', {'success': success})

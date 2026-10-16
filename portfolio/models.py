@@ -96,3 +96,14 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f"{self.client_name} - {self.location_tag}"
+
+class MentorshipInquiry(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    skill_level = models.CharField(max_length=50, blank=True, null=True) # e.g. Beginner, Intermediate
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Mentorship Inquiry from {self.name} ({self.email})"
