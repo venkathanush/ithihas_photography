@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 import traceback
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
 
 def home(request):
     categories = Category.objects.all()
@@ -101,9 +101,6 @@ def portfolio_detail(request, pk):
     return render(request, 'portfolio/detail.html', {'item': item})
 
 def contact(request):
-    # Check if we were redirected here after a successful submission
-    success = request.GET.get('submitted') == 'true'
-
     if request.method == 'POST':
         try:
             name = request.POST.get('name', '')
@@ -116,7 +113,7 @@ def contact(request):
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model
+            # 1. Save directly to the database model (Guaranteed save)
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -126,7 +123,7 @@ def contact(request):
                 message=message
             )
 
-            # 2. Try sending email notification via Brevo SMTP
+            # 2. Try sending email notification via Brevo SMTP (fail silently)
             try:
                 subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
                 email_content = (
@@ -149,10 +146,18 @@ def contact(request):
             except Exception as mail_err:
                 print(f"Email error (non-blocking): {mail_err}")
 
-        except Exception as db_err:
-            print(f"Database error during contact submission: {db_err}")
+            # Return a simple success response that never crashes
+            return HttpResponse(
+                "<div style='background:#111116; color:#00BFFF; padding:40px; text-align:center; font-family:sans-serif; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>"
+                "<h1>Inquiry Received Successfully!</h1>"
+                "<p style='color:#ccc; margin-top:10px;'>Thank you for reaching out to ITHIHAS. We will get back to you shortly.</p>"
+                "<a href='/' style='margin-top:20px; background:#00BFFF; color:#000; padding:10px 20px; border-radius:9999px; text-decoration:none; font-weight:bold;'>Return Home</a>"
+                "</div>"
+            )
 
-        # Redirect with a query parameter so the GET request knows it was successful
-        return redirect('/contact/?submitted=true')
+        except Exception as e:
+            print(f"Contact form critical error: {e}")
+            return HttpResponse("An error occurred while saving your inquiry. Please try again.", status=500)
 
+    success = request.GET.get('submitted') == 'true'
     return render(request, 'portfolio/contact.html', {'success': success})
