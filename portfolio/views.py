@@ -2,9 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Category, PortfolioItem, BookingInquiry, AboutSection, ServiceTier, LegacyStory, Testimonial
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib import messages
-import traceback
-from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
@@ -55,55 +52,10 @@ def portfolio_detail(request, pk):
     item = get_object_or_404(PortfolioItem, pk=pk)
     return render(request, 'portfolio/detail.html', {'item': item})
 
-def home(request):
-    categories = Category.objects.all()
-    selected_category_slug = request.GET.get('category')
-    featured_items = PortfolioItem.objects.filter(is_featured=True)
-    
-    if selected_category_slug:
-        items = PortfolioItem.objects.filter(category__slug=selected_category_slug)
-    else:
-        items = PortfolioItem.objects.all()
-
-    about_data = AboutSection.objects.first()
-    service_tiers = ServiceTier.objects.all()
-    legacy_stories = LegacyStory.objects.all()
-    testimonials = Testimonial.objects.all()
-
-    context = {
-        'categories': categories,
-        'items': items,
-        'featured_items': featured_items,
-        'selected_category': selected_category_slug,
-        'about': about_data,
-        'service_tiers': service_tiers,
-        'legacy_stories': legacy_stories,
-        'testimonials': testimonials,
-    }
-    return render(request, 'portfolio/home.html', context)
-
-def gallery(request):
-    categories = Category.objects.all()
-    selected_category_slug = request.GET.get('category')
-    
-    if selected_category_slug:
-        items = PortfolioItem.objects.filter(category__slug=selected_category_slug)
-    else:
-        items = PortfolioItem.objects.all()
-
-    context = {
-        'categories': categories,
-        'items': items,
-        'selected_category': selected_category_slug,
-    }
-    return render(request, 'portfolio/gallery.html', context)
-
-def portfolio_detail(request, pk):
-    item = get_object_or_404(PortfolioItem, pk=pk)
-    return render(request, 'portfolio/detail.html', {'item': item})
-
 @csrf_exempt
 def contact(request):
+    success = request.GET.get('submitted') == 'true'
+
     if request.method == 'POST':
         try:
             name = request.POST.get('name', '')
@@ -149,17 +101,10 @@ def contact(request):
             except Exception as mail_err:
                 print(f"Email error: {mail_err}")
 
-            return HttpResponse(
-                "<div style='background:#111116; color:#00BFFF; padding:40px; text-align:center; font-family:sans-serif; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;'>"
-                "<h1>Inquiry Received Successfully!</h1>"
-                "<p style='color:#ccc; margin-top:10px;'>Thank you for reaching out to ITHIHAS. We will get back to you shortly.</p>"
-                "<a href='/' style='margin-top:20px; background:#00BFFF; color:#000; padding:10px 20px; border-radius:9999px; text-decoration:none; font-weight:bold;'>Return Home</a>"
-                "</div>"
-            )
-
         except Exception as e:
-            print(f"Error: {e}")
-            return HttpResponse("Error saving inquiry", status=500)
+            print(f"Error saving booking inquiry: {e}")
 
-    success = request.GET.get('submitted') == 'true'
+        # Redirect cleanly via GET to prevent any template context rendering crashes
+        return redirect('/contact/?submitted=true')
+
     return render(request, 'portfolio/contact.html', {'success': success})
