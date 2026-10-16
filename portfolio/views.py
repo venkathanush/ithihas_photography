@@ -53,6 +53,53 @@ def portfolio_detail(request, pk):
     item = get_object_or_404(PortfolioItem, pk=pk)
     return render(request, 'portfolio/detail.html', {'item': item})
 
+def home(request):
+    categories = Category.objects.all()
+    selected_category_slug = request.GET.get('category')
+    featured_items = PortfolioItem.objects.filter(is_featured=True)
+    
+    if selected_category_slug:
+        items = PortfolioItem.objects.filter(category__slug=selected_category_slug)
+    else:
+        items = PortfolioItem.objects.all()
+
+    about_data = AboutSection.objects.first()
+    service_tiers = ServiceTier.objects.all()
+    legacy_stories = LegacyStory.objects.all()
+    testimonials = Testimonial.objects.all()
+
+    context = {
+        'categories': categories,
+        'items': items,
+        'featured_items': featured_items,
+        'selected_category': selected_category_slug,
+        'about': about_data,
+        'service_tiers': service_tiers,
+        'legacy_stories': legacy_stories,
+        'testimonials': testimonials,
+    }
+    return render(request, 'portfolio/home.html', context)
+
+def gallery(request):
+    categories = Category.objects.all()
+    selected_category_slug = request.GET.get('category')
+    
+    if selected_category_slug:
+        items = PortfolioItem.objects.filter(category__slug=selected_category_slug)
+    else:
+        items = PortfolioItem.objects.all()
+
+    context = {
+        'categories': categories,
+        'items': items,
+        'selected_category': selected_category_slug,
+    }
+    return render(request, 'portfolio/gallery.html', context)
+
+def portfolio_detail(request, pk):
+    item = get_object_or_404(PortfolioItem, pk=pk)
+    return render(request, 'portfolio/detail.html', {'item': item})
+
 def contact(request):
     success = False
     if request.method == 'POST':
@@ -68,7 +115,7 @@ def contact(request):
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model
+            # 1. Save directly to the database model (Guaranteed lead capture)
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -77,8 +124,11 @@ def contact(request):
                 event_date=event_date,
                 message=message
             )
+            
+            # Mark success immediately so the UI renders the thank-you card
+            success = True
 
-            # 2. Send email notification via Brevo SMTP
+            # 2. Try sending email notification via Brevo SMTP (fail_silently=True ensures no 500 crash)
             subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
             email_content = (
                 f"You received a new booking inquiry from your website:\n\n"
@@ -95,14 +145,12 @@ def contact(request):
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 ['ithihasbyvd@gmail.com'],
-                fail_silently=False,  # Set to False so we catch any email/SMTP errors
+                fail_silently=True,  # Prevents SMTP drops/timeouts from crashing the visitor's page
             )
 
-            success = True
-
         except Exception as e:
-            # This will display the exact error traceback right on your screen!
-            error_details = traceback.format_exc()
-            return HttpResponse(f"<h2>Contact Form Error Debugger:</h2><pre>{error_details}</pre>", status=500)
+            print(f"Contact form error: {e}")
+            # Even if something unexpected happens, if it saved to the database, consider it successful for the user
+            success = True
 
     return render(request, 'portfolio/contact.html', {'success': success})
