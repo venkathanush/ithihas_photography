@@ -1,6 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Category, PortfolioItem, Photo, BookingInquiry, AboutSection, ServiceTier, LegacyStory, Testimonial
+from .models import Category, PortfolioItem, Photo, BookingInquiry, AboutSection, ServiceTier, LegacyStory, Testimonial, MentorshipInquiry
 
 class PhotoInline(admin.TabularInline):
     model = Photo
@@ -42,3 +42,9 @@ class LegacyStoryAdmin(ModelAdmin):
 class TestimonialAdmin(ModelAdmin):
     list_display = ('client_name', 'location_tag', 'rating', 'order')
     list_editable = ('order',)
+
+@admin.register(MentorshipInquiry)
+class MentorshipInquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'skill_level', 'created_at')
+    search_fields = ('name', 'email', 'phone')
+    list_filter = ('skill_level', 'created_at')
