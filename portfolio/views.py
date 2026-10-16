@@ -101,7 +101,6 @@ def portfolio_detail(request, pk):
     return render(request, 'portfolio/detail.html', {'item': item})
 
 def contact(request):
-    success = False
     if request.method == 'POST':
         try:
             name = request.POST.get('name', '')
@@ -109,13 +108,12 @@ def contact(request):
             phone = request.POST.get('phone', '')
             event_type = request.POST.get('event_type', '')
             
-            # Safely handle empty date input from HTML form
             date_str = request.POST.get('event_date', '').strip()
             event_date = date_str if date_str else None
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model (Guaranteed lead capture)
+            # 1. Save directly to the database model (Guaranteed save)
             BookingInquiry.objects.create(
                 name=name,
                 email=email,
@@ -124,33 +122,34 @@ def contact(request):
                 event_date=event_date,
                 message=message
             )
-            
-            # Mark success immediately so the UI renders the thank-you card
-            success = True
 
-            # 2. Try sending email notification via Brevo SMTP (fail_silently=True ensures no 500 crash)
-            subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
-            email_content = (
-                f"You received a new booking inquiry from your website:\n\n"
-                f"Name: {name}\n"
-                f"Email: {email}\n"
-                f"Phone: {phone}\n"
-                f"Event Type: {event_type}\n"
-                f"Event Date: {event_date if event_date else 'Not specified'}\n\n"
-                f"Message:\n{message}"
-            )
+            # 2. Try sending email notification via Brevo SMTP (fail silently so it never blocks)
+            try:
+                subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
+                email_content = (
+                    f"You received a new booking inquiry from your website:\n\n"
+                    f"Name: {name}\n"
+                    f"Email: {email}\n"
+                    f"Phone: {phone}\n"
+                    f"Event Type: {event_type}\n"
+                    f"Event Date: {event_date if event_date else 'Not specified'}\n\n"
+                    f"Message:\n{message}"
+                )
 
-            send_mail(
-                subject,
-                email_content,
-                settings.DEFAULT_FROM_EMAIL,
-                ['ithihasbyvd@gmail.com'],
-                fail_silently=True,  # Prevents SMTP drops/timeouts from crashing the visitor's page
-            )
+                send_mail(
+                    subject,
+                    email_content,
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['ithihasbyvd@gmail.com'],
+                    fail_silently=True,
+                )
+            except Exception as mail_err:
+                print(f"Email error (non-blocking): {mail_err}")
 
-        except Exception as e:
-            print(f"Contact form error: {e}")
-            # Even if something unexpected happens, if it saved to the database, consider it successful for the user
-            success = True
+        except Exception as db_err:
+            print(f"Database error during contact submission: {db_err}")
 
-    return render(request, 'portfolio/contact.html', {'success': success})
+        # 3. Redirect cleanly using GET request to avoid any template 500 rendering crashes
+        return redirect('contact')
+
+    return render(request, 'portfolio/contact.html', {'success': False})
