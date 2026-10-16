@@ -59,6 +59,11 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Lightgallery CSS & Plugins -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lightgallery.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-zoom.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-thumbnail.min.css" />
+
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #08080a; }
@@ -98,7 +103,7 @@
 <header id="main-header" class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 via-black/50 to-transparent py-4 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         
-        <!-- Custom Logo Image (Full view, no round crop, no side text) -->
+        <!-- Custom Logo Image -->
         <a href="{% url 'home' %}" class="flex items-center group focus:outline-none">
             <img src="https://res.cloudinary.com/lflhno7m/image/upload/v1791996847/static/images/ithihas_logo.17aa0464ebee.png" alt="ITHIHAS Photography" class="h-12 w-auto">
         </a>
@@ -203,9 +208,15 @@
             });
         }
     </script>
-<!-- Floating WhatsApp Button -->
+
+    <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/916301429352?text=Hello%20ITHIHAS%20Photography,%20I%20would%20like%20to%20know%20more%20details." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(34,197,94,0.5)] transform hover:scale-110 transition-all duration-300">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </a>
+
+    <!-- Lightgallery Core & Plugins JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/lightgallery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/zoom/lg-zoom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/thumbnail/lg-thumbnail.min.js"></script>
 </body>
 </html>
