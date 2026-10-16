@@ -1,3 +1,4 @@
+import socket
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Category, PortfolioItem, BookingInquiry, AboutSection, ServiceTier, LegacyStory, Testimonial
 from django.core.mail import send_mail
@@ -68,18 +69,22 @@ def contact(request):
             
             message = request.POST.get('message', '')
 
-            # 1. Save directly to the database model
-            BookingInquiry.objects.create(
-                name=name,
-                email=email,
-                phone=phone,
-                event_type=event_type,
-                event_date=event_date,
-                message=message
-            )
+            # 1. Save directly to the database model (Supabase)
+            if name and email:
+                BookingInquiry.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    event_type=event_type,
+                    event_date=event_date,
+                    message=message
+                )
 
-            # 2. Non-blocking email dispatch
+            # 2. Non-blocking email dispatch with a 3-second strict socket timeout to prevent Gunicorn worker timeouts
             try:
+                old_timeout = socket.getdefaulttimeout()
+                socket.setdefaulttimeout(3.0)
+
                 subject = f"New Inquiry from {name} ({event_type}) — ITHIHAS Photography"
                 email_content = (
                     f"You received a new booking inquiry from your website:\n\n"
@@ -98,8 +103,9 @@ def contact(request):
                     ['ithihasbyvd@gmail.com'],
                     fail_silently=True,
                 )
+                socket.setdefaulttimeout(old_timeout)
             except Exception as mail_err:
-                print(f"Email error: {mail_err}")
+                print(f"Email error (safeguarded): {mail_err}")
 
         except Exception as e:
             print(f"Error saving booking inquiry: {e}")
